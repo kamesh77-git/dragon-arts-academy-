@@ -6,6 +6,7 @@ import { getSitePage } from "@/lib/pages";
 import { auditPage } from "@/lib/seo/audit";
 import type { RuleResult, SEOPriority } from "@/lib/seo/types";
 import { Card, CardHeader, PageHeader, ScoreBadge, buttonClass, scoreColor, secondaryButtonClass } from "@/components/admin/ui";
+import { requireUser } from "@/lib/admin";
 
 export const metadata: Metadata = { title: "SEO audit" };
 
@@ -36,6 +37,7 @@ function RuleRow({ rule }: { rule: RuleResult }) {
 }
 
 export default async function SeoAuditPage({ searchParams }: PageProps<"/admin/seo/audit">) {
+  await requireUser(["admin"]);
   const { path } = await searchParams;
   if (typeof path !== "string" || !getSitePage(path)) notFound();
 

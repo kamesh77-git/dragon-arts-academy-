@@ -17,14 +17,15 @@ app/(site)/            Public website (own root layout, ported site.css + pages.
   actions.ts           Saves enquiry-form leads
 app/admin/             Admin (own root layout with Tailwind)
   login/               Email/password (+ Google when configured)
-  (dashboard)/         Overview, Enquiries, Blog editor (live 69-rule score), SEO, Team, My account
+  (dashboard)/         Overview, Enquiries, Attendance, Students, Blog editor (live 69-rule score), SEO, Team, My account
 app/robots.ts, sitemap.ts, llms.txt/, llms-full.txt/   Crawl + AI-answer-engine files
 content/blog/*.md      The 5 launch posts; `npm run blog:seed` imports them (posts then live in the DB)
 lib/site.ts            Business facts (phones, address, stats) used everywhere
 lib/courses.ts         Course content + SEO defaults
 lib/pages.ts           Registry of SEO-managed pages
 lib/seo/               69-rule SEO engine; audit.ts scores the live rendered HTML
-db/schema.ts           users, page_seo (admin overrides), leads, posts
+db/schema.ts           users, page_seo (admin overrides), leads, posts, students, enrolments, attendance
+lib/rbac.ts            Who can open what: admin = all, staff = enquiries, teacher = attendance/students for their arts
 proxy.ts               Gates /admin
 _starter-kit/          The LAMBLILY kit this was built from (not built, reference only)
 ```
@@ -56,6 +57,14 @@ Needs a Postgres database (Neon recommended) and these env vars: `DATABASE_URL`,
 for live Google reviews. Without the key, the reviews section shows only a "Write a review" button. Run `npm run db:push` against the production database
 once, then create the first admin with `npm run admin:create`.
 
+## Roles
+
+| Role | Access |
+|---|---|
+| Admin | Everything |
+| Staff | Enquiries only |
+| Teacher | Attendance (per student, or CSV upload) and read-only student pages, for the arts ticked on their Team entry |
+
 ## Not built yet (planned)
 
-Fee payments, student/parent login, educator profiles and payroll.
+Fee payments, student/parent login, educator salary and payroll.

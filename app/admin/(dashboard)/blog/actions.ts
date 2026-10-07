@@ -52,7 +52,7 @@ function revalidatePost(slug: string) {
 }
 
 export async function createPost() {
-  await requireUser();
+  await requireUser(["admin"]);
   const base = `new-post-${Date.now().toString(36)}`;
   const [row] = await db
     .insert(posts)
@@ -62,7 +62,7 @@ export async function createPost() {
 }
 
 export async function savePost(input: PostInput): Promise<PostState> {
-  await requireUser();
+  await requireUser(["admin"]);
   const parsed = postSchema.safeParse(input);
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? "Invalid input" };
   const d = parsed.data;
@@ -115,7 +115,7 @@ export async function savePost(input: PostInput): Promise<PostState> {
 }
 
 export async function deletePost(formData: FormData) {
-  await requireUser();
+  await requireUser(["admin"]);
   const id = z.uuid().parse(formData.get("id"));
   const [row] = await db.delete(posts).where(eq(posts.id, id)).returning({ slug: posts.slug });
   if (row) revalidatePost(row.slug);

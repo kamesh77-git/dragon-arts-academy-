@@ -8,10 +8,12 @@ import { db } from "@/db";
 import { leadStatusEnum, leads } from "@/db/schema";
 import { Card, CardHeader, PageHeader, StatusBadge, buttonClass, formatDateTime, inputClass, secondaryButtonClass } from "@/components/admin/ui";
 import { updateLead } from "../actions";
+import { requireUser } from "@/lib/admin";
 
 export const metadata: Metadata = { title: "Enquiry" };
 
 export default async function LeadDetailPage({ params }: PageProps<"/admin/leads/[id]">) {
+  const user = await requireUser(["admin", "staff"]);
   const { id } = await params;
   if (!z.uuid().safeParse(id).success) notFound();
   const lead = await db.query.leads.findFirst({ where: eq(leads.id, id) });
@@ -41,6 +43,9 @@ export default async function LeadDetailPage({ params }: PageProps<"/admin/leads
           <>
             <a href={`tel:${lead.phone}`} className={secondaryButtonClass}>Call</a>
             <a href={waHref} target="_blank" rel="noopener" className={buttonClass}>Reply on WhatsApp</a>
+            {user.role === "admin" && lead.status !== "enrolled" && (
+              <Link href={`/admin/students/new?lead=${lead.id}`} className={buttonClass}>Enrol as student</Link>
+            )}
             <Link href="/admin/leads" className={secondaryButtonClass}>← All enquiries</Link>
           </>
         }

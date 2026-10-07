@@ -6,17 +6,20 @@ import { users } from "@/db/schema";
 import { requireUser } from "@/lib/admin";
 import { Card, CardHeader, PageHeader, formatDateTime } from "@/components/admin/ui";
 import AddMemberForm from "./AddMemberForm";
+import RoleFields from "./RoleFields";
+import { courses } from "@/lib/courses";
 import { removeTeamMember, updateRole } from "./actions";
 
 export const metadata: Metadata = { title: "Team" };
 
 export default async function TeamPage() {
-  const me = await requireUser("admin");
+  const me = await requireUser(["admin"]);
   const team = await db.select().from(users).orderBy(asc(users.createdAt));
+  const courseOptions = courses.map((c) => ({ slug: c.slug, name: c.name }));
 
   return (
     <>
-      <PageHeader title="Team" subtitle="People who can sign in to this admin. Staff can manage enquiries and SEO; admins can also manage the team." />
+      <PageHeader title="Team" subtitle="People who can sign in. Admin: everything. Staff: enquiries only. Teacher: attendance and students for their arts." />
 
       <Card className="overflow-hidden">
         <div className="overflow-x-auto">
@@ -42,13 +45,10 @@ export default async function TeamPage() {
                       {isMe ? (
                         <span className="capitalize">{u.role}</span>
                       ) : (
-                        <form action={updateRole} className="flex items-center gap-2">
+                        <form action={updateRole} className="flex flex-wrap items-start gap-2">
                           <input type="hidden" name="id" value={u.id} />
-                          <select name="role" defaultValue={u.role} className="rounded border border-slate-300 px-2 py-1 text-sm">
-                            <option value="staff">Staff</option>
-                            <option value="admin">Admin</option>
-                          </select>
-                          <button className="text-xs font-medium text-brand-700 hover:underline">Update</button>
+                          <RoleFields compact defaultRole={u.role} defaultCourses={u.courses} courseOptions={courseOptions} />
+                          <button className="py-1 text-xs font-medium text-brand-700 hover:underline">Update</button>
                         </form>
                       )}
                     </td>
@@ -71,7 +71,7 @@ export default async function TeamPage() {
 
       <Card className="mt-6">
         <CardHeader title="Add a team member" />
-        <AddMemberForm />
+        <AddMemberForm courseOptions={courseOptions} />
       </Card>
     </>
   );

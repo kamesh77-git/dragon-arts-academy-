@@ -13,6 +13,7 @@ import { PageHeader, secondaryButtonClass } from "@/components/admin/ui";
 import { deletePost } from "../actions";
 import DeletePostForm from "./DeletePostForm";
 import PostEditor from "./PostEditor";
+import { requireUser } from "@/lib/admin";
 
 export const metadata: Metadata = { title: "Edit post" };
 
@@ -24,6 +25,7 @@ function toLocalInput(d: Date | null) {
 }
 
 export default async function EditPostPage({ params }: PageProps<"/admin/blog/[id]">) {
+  await requireUser(["admin"]);
   const { id } = await params;
   if (!z.uuid().safeParse(id).success) notFound();
   const post = await db.query.posts.findFirst({ where: eq(posts.id, id) });

@@ -20,7 +20,7 @@ const schema = z.object({
 export type SaveState = { ok: boolean; message: string } | null;
 
 export async function savePageSeo(_prev: SaveState, formData: FormData): Promise<SaveState> {
-  const user = await requireUser();
+  const user = await requireUser(["admin"]);
   const parsed = schema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? "Invalid input" };
 
@@ -47,7 +47,7 @@ export async function savePageSeo(_prev: SaveState, formData: FormData): Promise
 }
 
 export async function resetPageSeo(formData: FormData) {
-  await requireUser();
+  await requireUser(["admin"]);
   const path = String(formData.get("path") ?? "");
   if (!getSitePage(path)) return;
   await db.delete(pageSeo).where(eq(pageSeo.path, path));

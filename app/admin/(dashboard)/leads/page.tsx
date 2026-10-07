@@ -5,12 +5,14 @@ import { count, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { leadStatusEnum, leads, type LeadStatus } from "@/db/schema";
 import { Card, PageHeader, StatusBadge, formatDateTime } from "@/components/admin/ui";
+import { requireUser } from "@/lib/admin";
 
 export const metadata: Metadata = { title: "Enquiries" };
 
 const FILTERS: ("all" | LeadStatus)[] = ["all", ...leadStatusEnum.enumValues];
 
 export default async function LeadsPage({ searchParams }: PageProps<"/admin/leads">) {
+  await requireUser(["admin", "staff"]);
   const { status: raw } = await searchParams;
   const status = FILTERS.includes(raw as LeadStatus) ? (raw as LeadStatus | "all") : "all";
 

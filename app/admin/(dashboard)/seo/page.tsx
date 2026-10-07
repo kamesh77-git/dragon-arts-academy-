@@ -3,10 +3,12 @@ import Link from "next/link";
 
 import { auditAllPages } from "@/lib/seo/audit";
 import { Card, PageHeader, ScoreBadge, StatCard } from "@/components/admin/ui";
+import { requireUser } from "@/lib/admin";
 
 export const metadata: Metadata = { title: "SEO" };
 
 export default async function SeoDashboard() {
+  await requireUser(["admin"]);
   const audits = await auditAllPages();
   const avg = Math.round(audits.reduce((s, a) => s + a.audit.overallScore, 0) / Math.max(audits.length, 1));
   const excellent = audits.filter((a) => a.audit.overallScore >= 90).length;

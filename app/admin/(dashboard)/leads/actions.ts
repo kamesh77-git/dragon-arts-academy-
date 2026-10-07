@@ -15,7 +15,7 @@ const updateSchema = z.object({
 });
 
 export async function updateLead(formData: FormData) {
-  await requireUser();
+  await requireUser(["admin", "staff"]);
   const data = updateSchema.parse({
     id: formData.get("id"),
     status: formData.get("status"),

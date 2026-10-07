@@ -6,10 +6,12 @@ import { db } from "@/db";
 import { leads } from "@/db/schema";
 import { auditAllPages } from "@/lib/seo/audit";
 import { Card, CardHeader, PageHeader, ScoreBadge, StatCard, StatusBadge, formatDateTime } from "@/components/admin/ui";
+import { requireUser } from "@/lib/admin";
 
 export const metadata: Metadata = { title: "Overview" };
 
 export default async function AdminOverview() {
+  await requireUser(["admin"]);
   const monthStart = new Date();
   monthStart.setDate(1);
   monthStart.setHours(0, 0, 0, 0);

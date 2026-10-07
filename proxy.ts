@@ -1,18 +1,22 @@
 import { NextResponse } from "next/server";
 
 import { auth } from "@/auth";
+import { canAccess, homeFor, isRole } from "@/lib/rbac";
 
-// Gates everything under /admin (except the login page) behind a signed-in
-// team member. Page-level checks still re-verify; this is the front door.
+// Gates /admin: signed-in team members only, and each role only sees its
+// own areas (lib/rbac.ts). Pages and actions re-check with requireUser().
 export default auth((req) => {
   const { pathname } = req.nextUrl;
   if (pathname === "/admin/login") return;
 
   const role = req.auth?.user?.role;
-  if (role !== "admin" && role !== "staff") {
+  if (!isRole(role)) {
     const url = new URL("/admin/login", req.nextUrl.origin);
     url.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(url);
+  }
+  if (!canAccess(role, pathname)) {
+    return NextResponse.redirect(new URL(homeFor(role), req.nextUrl.origin));
   }
 });
 

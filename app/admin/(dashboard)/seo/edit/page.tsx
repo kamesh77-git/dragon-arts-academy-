@@ -8,10 +8,12 @@ import { SITE_URL, TITLE_SUFFIX } from "@/lib/site";
 import { PageHeader, buttonClass, secondaryButtonClass } from "@/components/admin/ui";
 import { resetPageSeo } from "../actions";
 import SeoForm from "./SeoForm";
+import { requireUser } from "@/lib/admin";
 
 export const metadata: Metadata = { title: "Edit page SEO" };
 
 export default async function EditSeoPage({ searchParams }: PageProps<"/admin/seo/edit">) {
+  await requireUser(["admin"]);
   const { path } = await searchParams;
   if (typeof path !== "string" || !getSitePage(path)) notFound();
   const seo = await getPageSeo(path);

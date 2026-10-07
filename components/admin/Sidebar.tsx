@@ -3,21 +3,25 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const NAV = [
-  { href: "/admin", label: "Overview", icon: "▦", exact: true },
-  { href: "/admin/leads", label: "Enquiries", icon: "✉" },
-  { href: "/admin/blog", label: "Blog", icon: "✎" },
-  { href: "/admin/seo", label: "SEO (69 rules)", icon: "◎" },
-  { href: "/admin/team", label: "Team", icon: "☺", adminOnly: true },
-  { href: "/admin/account", label: "My account", icon: "⚙" },
+import type { Role } from "@/lib/rbac";
+
+const NAV: { href: string; label: string; icon: string; roles: Role[]; exact?: boolean }[] = [
+  { href: "/admin", label: "Overview", icon: "▦", exact: true, roles: ["admin"] },
+  { href: "/admin/leads", label: "Enquiries", icon: "✉", roles: ["admin", "staff"] },
+  { href: "/admin/attendance", label: "Attendance", icon: "✓", roles: ["admin", "teacher"] },
+  { href: "/admin/students", label: "Students", icon: "☷", roles: ["admin", "teacher"] },
+  { href: "/admin/blog", label: "Blog", icon: "✎", roles: ["admin"] },
+  { href: "/admin/seo", label: "SEO (69 rules)", icon: "◎", roles: ["admin"] },
+  { href: "/admin/team", label: "Team", icon: "☺", roles: ["admin"] },
+  { href: "/admin/account", label: "My account", icon: "⚙", roles: ["admin", "staff", "teacher"] },
 ];
 
-export default function Sidebar({ role, newLeads }: { role: "admin" | "staff"; newLeads: number }) {
+export default function Sidebar({ role, newLeads }: { role: Role; newLeads: number }) {
   const pathname = usePathname();
 
   return (
     <nav aria-label="Admin" className="flex flex-col gap-1">
-      {NAV.filter((n) => !n.adminOnly || role === "admin").map((n) => {
+      {NAV.filter((n) => n.roles.includes(role)).map((n) => {
         const active = n.exact ? pathname === n.href : pathname.startsWith(n.href);
         return (
           <Link

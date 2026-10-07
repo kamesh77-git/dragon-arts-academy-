@@ -12,7 +12,10 @@ export const dynamic = "force-dynamic";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const user = await requireUser();
-  const [{ value: newLeads }] = await db.select({ value: count() }).from(leads).where(eq(leads.status, "new"));
+  const newLeads =
+    user.role === "teacher"
+      ? 0
+      : (await db.select({ value: count() }).from(leads).where(eq(leads.status, "new")))[0].value;
 
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-[240px_1fr]">
@@ -22,10 +25,10 @@ export default async function DashboardLayout({ children }: { children: ReactNod
           <img src="/images/logo.webp" alt="" width={40} height={40} className="h-10 w-10" />
           <div className="leading-tight">
             <p className="font-display text-lg font-bold">Dragon Ryu</p>
-            <p className="text-xs uppercase tracking-wider text-white/60">Admin</p>
+            <p className="text-xs uppercase tracking-wider text-white/60">{user.role === "admin" ? "Admin" : user.role === "staff" ? "Staff" : "Teacher"}</p>
           </div>
         </div>
-        <Sidebar role={user.role!} newLeads={newLeads} />
+        <Sidebar role={user.role} newLeads={newLeads} />
         <div className="mt-auto space-y-3 border-t border-white/10 pt-4 text-sm">
           <a href="/" target="_blank" rel="noopener" className="block text-white/70 hover:text-white">↗ View website</a>
           <p className="truncate text-white/50" title={user.email ?? ""}>{user.email}</p>

@@ -1,5 +1,9 @@
 import {
   pgTable,
+  serial,
+  date,
+  boolean,
+  uniqueIndex,
   pgEnum,
   uuid,
   text,
@@ -12,7 +16,8 @@ import {
 
 // ---------- ENUMS ----------
 
-export const userRoleEnum = pgEnum("user_role", ["admin", "staff"]);
+// admin: everything · staff: enquiries only · teacher: attendance for their arts
+export const userRoleEnum = pgEnum("user_role", ["admin", "staff", "teacher"]);
 
 export const leadStatusEnum = pgEnum("lead_status", [
   "new",
@@ -32,6 +37,8 @@ export const users = pgTable("users", {
   name: varchar("name", { length: 255 }),
   passwordHash: text("password_hash"),
   role: userRoleEnum("role").notNull().default("staff"),
+  /** Course slugs (lib/courses.ts) a teacher handles. Ignored for other roles. */
+  courses: jsonb("courses").$type<string[]>().notNull().default([]),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
@@ -109,7 +116,59 @@ export const posts = pgTable(
   (t) => [index("posts_status_published_idx").on(t.status, t.publishedAt)]
 );
 
+// ---------- STUDENTS & ATTENDANCE ----------
+
+export const students = pgTable("students", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  /** Friendly running number, shown as DR-0001. */
+  rollNo: serial("roll_no").notNull().unique(),
+  name: varchar("name", { length: 255 }).notNull(),
+  parentName: varchar("parent_name", { length: 255 }),
+  phone: varchar("phone", { length: 30 }),
+  email: varchar("email", { length: 255 }),
+  age: integer("age"),
+  notes: text("notes"),
+  active: boolean("active").notNull().default(true),
+  leadId: uuid("lead_id").references(() => leads.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/** A student taking one art (course slug) in a batch. */
+export const enrolments = pgTable(
+  "enrolments",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    studentId: uuid("student_id").notNull().references(() => students.id, { onDelete: "cascade" }),
+    courseSlug: varchar("course_slug", { length: 160 }).notNull(),
+    batch: varchar("batch", { length: 120 }).notNull().default(""),
+    active: boolean("active").notNull().default(true),
+    startedOn: date("started_on").notNull().defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("enrolments_student_course_uq").on(t.studentId, t.courseSlug), index("enrolments_course_idx").on(t.courseSlug)]
+);
+
+export const attendanceStatusEnum = pgEnum("attendance_status", ["present", "absent", "late", "excused"]);
+
+export const attendance = pgTable(
+  "attendance",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    enrolmentId: uuid("enrolment_id").notNull().references(() => enrolments.id, { onDelete: "cascade" }),
+    date: date("date").notNull(),
+    status: attendanceStatusEnum("status").notNull(),
+    note: text("note"),
+    markedBy: uuid("marked_by").references(() => users.id, { onDelete: "set null" }),
+    markedAt: timestamp("marked_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("attendance_enrolment_date_uq").on(t.enrolmentId, t.date), index("attendance_date_idx").on(t.date)]
+);
+
 export type User = typeof users.$inferSelect;
+export type Student = typeof students.$inferSelect;
+export type Enrolment = typeof enrolments.$inferSelect;
+export type AttendanceStatus = (typeof attendanceStatusEnum.enumValues)[number];
+export type Role = (typeof userRoleEnum.enumValues)[number];
 export type Post = typeof posts.$inferSelect;
 export type PageSeo = typeof pageSeo.$inferSelect;
 export type Lead = typeof leads.$inferSelect;

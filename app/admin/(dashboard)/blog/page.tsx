@@ -8,10 +8,12 @@ import { estimatePostSeo } from "@/lib/seo/estimate";
 import { isoDate } from "@/lib/blog";
 import { Card, PageHeader, ScoreBadge, buttonClass, formatDateTime } from "@/components/admin/ui";
 import { createPost } from "./actions";
+import { requireUser } from "@/lib/admin";
 
 export const metadata: Metadata = { title: "Blog" };
 
 export default async function AdminBlogPage() {
+  await requireUser(["admin"]);
   const rows = await db.select().from(posts).orderBy(desc(posts.updatedAt));
 
   return (
