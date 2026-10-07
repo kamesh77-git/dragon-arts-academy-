@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 260" role="img" aria-labelledby="title desc">
+  <title id="title">Karate emblem</title>
+  <desc id="desc">A stylized karate badge with a circular crest and martial arts-inspired emblem.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+  </defs>
+  <circle cx="130" cy="130" r="118" fill="url(#bg)" stroke="#f8fafc" stroke-width="8"/>
+  <circle cx="130" cy="130" r="96" fill="none" stroke="#facc15" stroke-width="5" stroke-dasharray="6 8"/>
+  <path d="M130 46c18 18 28 42 28 68 0 28-10 52-28 70-18-18-28-42-28-70 0-26 10-50 28-68z" fill="#f8fafc" opacity="0.12"/>
+  <path d="M130 74l16 34 38 4-29 23 9 38-34-18-34 18 9-38-29-23 38-4z" fill="#facc15"/>
+  <circle cx="130" cy="130" r="8" fill="#0f172a"/>
+  <text x="130" y="218" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#f8fafc" font-weight="700">KARATE</text>
+</svg>

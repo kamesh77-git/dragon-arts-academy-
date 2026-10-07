@@ -1,5 +1,5 @@
 /* ============================================
-   Dragon Ryu Arts Academy — Stylesheet
+   Dragon Ryu Arts Academy - Stylesheet (ported from the static site)
    White + Teal + Elegant Purple
    ============================================ */
 
@@ -43,9 +43,9 @@
   --shadow-3d: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
   --radius: 12px;
   --radius-lg: 20px;
-  --font-display: "Cormorant Garamond", Georgia, serif;
-  --font-script: "Pacifico", cursive;
-  --font-body: "Outfit", system-ui, sans-serif;
+  --font-display: var(--ff-display), Georgia, serif;
+  --font-script: var(--ff-display), cursive;
+  --font-body: var(--ff-body), system-ui, sans-serif;
   --header-height: 80px;
   --transition: 0.3s ease;
   --perspective: 1200px;
@@ -1419,7 +1419,8 @@ ul {
   color: var(--white);
 }
 
-.footer h4 {
+.footer h4,
+.footer .footer__heading {
   color: var(--white);
   font-size: 0.9rem;
   font-weight: 600;

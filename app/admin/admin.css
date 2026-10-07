@@ -1,0 +1,35 @@
+@import "tailwindcss" source(none);
+@source "./";
+@source "../../components/admin";
+
+@theme {
+  --color-brand-50: #ecfdf5;
+  --color-brand-100: #ccfbf1;
+  --color-brand-500: #0d9488;
+  --color-brand-600: #0f766e;
+  --color-brand-700: #115e59;
+  --color-navy: #062830;
+  --color-gold: #f5c518;
+  --font-sans: var(--ff-body), system-ui, sans-serif;
+  --font-display: var(--ff-display), Georgia, serif;
+}
+
+body {
+  @apply bg-slate-50 text-slate-800 antialiased;
+}
+
+/* Markdown preview in the blog editor */
+.prose-preview h1 { @apply mb-3 text-3xl font-bold; }
+.prose-preview h2 { @apply mt-6 mb-2 font-display text-2xl font-bold text-slate-900; }
+.prose-preview h3 { @apply mt-4 mb-1 text-lg font-semibold text-slate-900; }
+.prose-preview p { @apply mb-3 leading-7; }
+.prose-preview ul { @apply mb-3 list-disc space-y-1 pl-6; }
+.prose-preview ol { @apply mb-3 list-decimal space-y-1 pl-6; }
+.prose-preview a { @apply text-brand-700 underline; }
+.prose-preview blockquote { @apply mb-3 border-l-4 border-gold bg-amber-50 px-4 py-2; }
+.prose-preview table { @apply mb-3 w-full border-collapse text-sm; }
+.prose-preview th, .prose-preview td { @apply border border-slate-200 px-3 py-2 text-left; }
+.prose-preview th { @apply bg-slate-50 font-semibold; }
+.prose-preview img { @apply rounded-lg; }
+.prose-preview .prose__caption { @apply mt-1 block text-center text-xs text-slate-500; }
+.prose-preview code { @apply rounded bg-slate-100 px-1 text-[0.9em]; }
