@@ -70,6 +70,13 @@ export const FOUNDER = {
 
 export const OG_IMAGE = "/images/og-default.jpg";
 
+// Meta (Facebook / Instagram) Pixel. Only loads in production builds so
+// local testing doesn't pollute ad data; set NEXT_PUBLIC_META_PIXEL_DEV=1
+// to load it in development, or NEXT_PUBLIC_META_PIXEL_ID="" to turn it off.
+export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID ?? "4668659940020747";
+export const META_PIXEL_ENABLED =
+  Boolean(META_PIXEL_ID) && (process.env.NODE_ENV === "production" || process.env.NEXT_PUBLIC_META_PIXEL_DEV === "1");
+
 // Date the current version of the site content was published / last
 // reviewed. Shown as page dates (E-E-A-T) and used in the sitemap.
 export const CONTENT_PUBLISHED = "2026-10-07";

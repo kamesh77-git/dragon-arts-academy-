@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 import { submitLead } from "@/app/(site)/actions";
+import { track } from "@/lib/analytics";
 import { enquiryCourseOptions } from "@/lib/courses";
 import { PHONES, whatsappLink } from "@/lib/site";
 
@@ -42,6 +43,8 @@ export default function EnquiryForm({ defaultCourse = "" }: { defaultCourse?: st
       `Message: ${data.message || "No additional message"}`,
     ].join("\n");
     window.open(whatsappLink(text), "_blank", "noopener,noreferrer");
+    // Ads optimise on this. Course only: no personal details go to Meta.
+    track("Lead", { content_name: data.course || "Enquiry", content_category: "Enrollment enquiry" });
 
     void submitLead({
       ...data,

@@ -4,9 +4,10 @@ import type { ReactNode } from "react";
 import "./site.css";
 import "./pages.css";
 import { body, display } from "@/lib/fonts";
-import { OG_IMAGE, SITE_NAME, SITE_URL, TITLE_SUFFIX } from "@/lib/site";
+import { META_PIXEL_ENABLED, META_PIXEL_ID, OG_IMAGE, SITE_NAME, SITE_URL, TITLE_SUFFIX } from "@/lib/site";
 import { organizationSchema, websiteSchema } from "@/lib/jsonld";
 import JsonLd from "@/components/site/JsonLd";
+import MetaPixel from "@/components/site/MetaPixel";
 import SiteHeader from "@/components/site/SiteHeader";
 import SiteFooter from "@/components/site/SiteFooter";
 import SiteEffects from "@/components/site/SiteEffects";
@@ -44,6 +45,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
         <WhatsAppFloat />
         <SiteEffects />
         <JsonLd data={[organizationSchema(), websiteSchema()]} />
+        {META_PIXEL_ENABLED && <MetaPixel pixelId={META_PIXEL_ID} />}
       </body>
     </html>
   );

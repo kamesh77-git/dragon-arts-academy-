@@ -38,6 +38,10 @@ export default function PrivacyPolicyPage() {
           <p>
             Many of our students are under 18. Enquiries for a child should be made by a parent or guardian, who provides their name on the form.
           </p>
+          <h2>Cookies and advertising</h2>
+          <p>
+            We use the Meta Pixel (Facebook and Instagram) to understand which of our ads lead to visits and enquiries, and to show our ads to people likely to be interested. It records pages viewed and whether an enquiry was sent, not the details you type into the form. You can control ad personalisation in your Facebook and Instagram ad settings, or block it with your browser&apos;s privacy settings.
+          </p>
           <h2>Sharing</h2>
           <p>We do not sell or share your details with third parties for marketing.</p>
           <h2>Your choices</h2>
