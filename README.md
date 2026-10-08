@@ -36,7 +36,7 @@ _starter-kit/          The LAMBLILY kit this was built from (not built, referenc
 npm install
 cp .env.example .env.local        # then fill in DATABASE_URL and AUTH_SECRET
 npm run db:push                   # create tables
-npm run admin:create -- you@example.com 'a-strong-password' "Your Name"
+npm run admin:create                # asks for email + password (hidden)
 npm run blog:seed                 # import the 5 launch posts
 npm run dev                       # http://localhost:3031
 ```
